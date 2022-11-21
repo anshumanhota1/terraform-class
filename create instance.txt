@@ -1,0 +1,11 @@
+provider "aws" {
+  access_key = "AKIAYGZGEICLEUX2HMP5"
+  secret_key = "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"
+  region     = "ap-south-1"
+}
+resource "aws_instance" "terraform1" {
+  ami           = "ami-079b5e5b3971bd10d"
+  instance_type = "t2.micro"
+  key_name      = "mumbai"
+  count         = 3
+}

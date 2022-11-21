@@ -1,0 +1,40 @@
+provider "aws" {
+access_key = "AKIAYGZGEICLE4P4Y3NF"
+secret_key = "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"
+region = "ap-south-1"
+}
+resource "aws_security_group" "web-node1" {
+  name        = "web-node1"
+  description = "Web Security Group"
+  vpc_id      = "vpc-0c1f87d6df77ad629"
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "all"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "all"
+    cidr_blocks = ["0.0.0.0/0"]
+}
+}
+resource "aws_instance" "terra1" {
+  ami           = "ami-079b5e5b3971bd10d"
+  instance_type = "t2.micro"
+  key_name      = "mumbai"
+  security_groups = ["${aws_security_group.web-node1.name}"]
+  count         = 3
+  tags = {
+    Name = "demoinstnce-${count.index}"
+  }
+
+          user_data = <<-EOF
+#! /bin/bash
+  sudo yum update -y
+  sudo amazon-linux-extras install nginx1
+  sudo systemctl start nginx.service
+  sudo service nginx start
+  EOF
+}
